@@ -18,6 +18,9 @@ mono_crash.*.json
 # Devin CLI local config (per-developer secrets, e.g. MCP API keys)
 .devin/config.local.json
 
+# Claude Code local settings (per-developer, not shared)
+.claude/settings.local.json
+
 # System/Editor-specific ignores
 .tmp/
 .DS_Store

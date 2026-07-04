@@ -201,6 +201,30 @@ microverse/
 4. Configure your API keys
 5. Run the project (F5)
 
+### 🤖 AI Assistant MCP Integration
+
+This project integrates [Coding-Solo/godot-mcp](https://github.com/Coding-Solo/godot-mcp), letting AI assistants such as Devin / Claude Code / Cursor / Windsurf launch & run the project, capture debug output, and manage scenes. The config is written to two places:
+
+- [.devin/config.json](.devin/config.json) — Devin project-scoped config (includes a `transport` field)
+- [.mcp.json](.mcp.json) — Claude Code project-scoped config (stdio is the default, no `transport` field)
+
+The MCP server depends on **Node.js** (provides `npx`) and the **Godot** executable. A one-click installer is provided that detects dependencies, installs them interactively when missing, and writes the local Godot path into both configs:
+
+| Platform | Command |
+| --- | --- |
+| macOS / Linux | `./install-mcp.sh` |
+| Windows | `install-mcp.cmd` |
+
+What the script does:
+1. Checks Node.js / npx — offers to install via Homebrew (mac) or winget (Windows) when missing;
+2. Checks Godot — offers to install via Homebrew cask / winget when missing;
+3. Verifies `@coding-solo/godot-mcp` is resolvable on the npm registry (the package itself is not executed, to avoid the stdio server hanging);
+4. Rewrites `GODOT_PATH` in both `.devin/config.json` and `.mcp.json` to match the local machine (only writes when the path actually changes — idempotent; if `.mcp.json` is missing it is scaffolded in Claude Code format);
+5. Prints an environment summary.
+
+> The script is idempotent and safe to re-run. Restart your MCP client after installation so it picks up the new config.
+> Claude Code prompts for trust approval the first time it loads a project-scoped `.mcp.json`; accept it in the interactive prompt. Keep personal secrets in `.claude/settings.local.json` (already in `.gitignore`).
+
 ## 🎮 Coming Soon to Steam
 
 <div align="center">

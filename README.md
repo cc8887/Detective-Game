@@ -179,6 +179,30 @@ office/
 - 集成新的AI服务提供商
 - 扩展对话功能
 
+### 🤖 AI 助手 MCP 集成
+
+本项目集成了 [Coding-Solo/godot-mcp](https://github.com/Coding-Solo/godot-mcp)，支持 Devin / Claude Code / Cursor / Windsurf 等 AI 助手直接启动/运行项目、捕获 debug 输出、管理场景。配置同时写入两处：
+
+- [.devin/config.json](.devin/config.json) —— Devin 项目级配置（含 `transport` 字段）
+- [.mcp.json](.mcp.json) —— Claude Code 项目级配置（stdio 默认，无 `transport` 字段）
+
+MCP server 依赖 **Node.js**（提供 `npx`）和 **Godot** 可执行文件。仓库提供一键安装脚本，会自动检测依赖、按需交互式安装，并把本地 Godot 路径同时写入上述两份配置：
+
+| 平台 | 命令 |
+| --- | --- |
+| macOS / Linux | `./install-mcp.sh` |
+| Windows | `install-mcp.cmd` |
+
+脚本行为：
+1. 检测 Node.js / npx —— 缺失时询问是否通过 Homebrew（mac）或 winget（Windows）安装；
+2. 检测 Godot —— 缺失时询问是否通过 Homebrew cask / winget 安装；
+3. 验证 `@coding-solo/godot-mcp` 在 npm registry 可达（不执行该包，避免 stdio server 阻塞）；
+4. 自动改写 `.devin/config.json` 与 `.mcp.json` 中的 `GODOT_PATH` 以适配当前机器（仅在路径变化时写入，幂等；`.mcp.json` 缺失时会自动按 Claude Code 格式创建）；
+5. 打印最终环境摘要。
+
+> 脚本可安全重复执行（幂等）。安装完成后请重启 MCP 客户端以加载新配置。
+> Claude Code 首次使用项目级 `.mcp.json` 时会提示信任确认，请在交互中批准。个人密钥请放 `.claude/settings.local.json`（已在 `.gitignore`）。
+
 ## 🎮 Steam版本即将上线
 
 <div align="center">
