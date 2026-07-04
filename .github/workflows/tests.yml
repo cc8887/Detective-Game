@@ -1,0 +1,45 @@
+name: Tests
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+env:
+  GODOT_VERSION: "4.7-stable"
+
+jobs:
+  gdunit4-tests:
+    name: Run gdUnit4 Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Godot
+        run: |
+          wget -q https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_linux.x86_64.zip
+          unzip -q Godot_v${GODOT_VERSION}_linux.x86_64.zip
+          chmod +x Godot_v${GODOT_VERSION}_linux.x86_64
+          sudo mv Godot_v${GODOT_VERSION}_linux.x86_64 /usr/local/bin/godot
+          rm Godot_v${GODOT_VERSION}_linux.x86_64.zip
+
+      - name: Import project resources
+        run: |
+          godot --headless --import --path . 2>&1 || true
+
+      - name: Run tests
+        run: |
+          godot --headless --path . -s res://addons/gdUnit4/bin/GdUnitCmdTool.gd -a "res://test/" --ignoreHeadlessMode
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gdunit4-reports
+          path: reports/
+          retention-days: 7
