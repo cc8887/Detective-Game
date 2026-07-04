@@ -250,7 +250,29 @@ update_one_config "$DEVIN_CONFIG"   devin   || exit 1
 update_one_config "$CLAUDE_CONFIG"  claude  || exit 1
 echo
 
-# --- 5. Summary --------------------------------------------------------------
+# --- 5. Install Godot addon dependencies ------------------------------------
+# Delegates to install-addons.sh (LimboAI GDExtension, etc.). That script is
+# idempotent, so re-running it here is a no-op when the pinned version is
+# already present. We don't hard-fail the MCP setup if addons can't be
+# installed -- they're independent concerns -- but we surface the result.
+
+ADDONS_INSTALLER="$SCRIPT_DIR/install-addons.sh"
+if [ -x "$ADDONS_INSTALLER" ]; then
+    info "Installing Godot addon dependencies (LimboAI) ..."
+    if "$ADDONS_INSTALLER"; then
+        :
+    else
+        warn "install-addons.sh reported a failure. LimboAI may be missing;"
+        warn "run ./install-addons.sh manually to diagnose."
+    fi
+    echo
+else
+    warn "install-addons.sh not found or not executable at $ADDONS_INSTALLER"
+    warn "Skip Godot addon installation. Run ./install-addons.sh manually if needed."
+    echo
+fi
+
+# --- 6. Summary --------------------------------------------------------------
 
 ok "MCP setup complete."
 echo
@@ -260,3 +282,4 @@ printf "  Devin config   : %s\n" "$DEVIN_CONFIG"
 printf "  Claude config  : %s\n" "$CLAUDE_CONFIG"
 echo
 info "Next step: restart your MCP client (Devin / Claude Code / Cursor / Windsurf) so it picks up the new config."
+info "Next step: open the project in Godot once so the LimboAI GDExtension is registered."

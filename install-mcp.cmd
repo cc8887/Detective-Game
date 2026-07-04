@@ -194,7 +194,26 @@ call :update_config "%DEVIN_CONFIG%" devin || ( call :fail "Failed to update %DE
 call :update_config "%CLAUDE_CONFIG%" claude || ( call :fail "Failed to update %CLAUDE_CONFIG%" & exit /b 1 )
 echo.
 
-REM --- 5. Summary -------------------------------------------------------------
+REM --- 5. Install Godot addon dependencies -----------------------------------
+REM Delegates to install-addons.cmd (LimboAI GDExtension, etc.). Idempotent.
+REM We don't hard-fail the MCP setup if addons can't be installed.
+
+set "ADDONS_INSTALLER=%SCRIPT_DIR%\install-addons.cmd"
+if exist "%ADDONS_INSTALLER%" (
+    call :info "Installing Godot addon dependencies (LimboAI) ..."
+    call "%ADDONS_INSTALLER%"
+    if errorlevel 1 (
+        call :warn "install-addons.cmd reported a failure. LimboAI may be missing;"
+        call :warn "run install-addons.cmd manually to diagnose."
+    )
+    echo.
+) else (
+    call :warn "install-addons.cmd not found at %ADDONS_INSTALLER%"
+    call :warn "Skip Godot addon installation. Run install-addons.cmd manually if needed."
+    echo.
+)
+
+REM --- 6. Summary -------------------------------------------------------------
 
 call :ok "MCP setup complete."
 echo.
@@ -204,6 +223,7 @@ echo   Devin config   : %DEVIN_CONFIG%
 echo   Claude config  : %CLAUDE_CONFIG%
 echo.
 call :info "Next step: restart your MCP client (Devin / Claude Code / Cursor / Windsurf) so it picks up the new config."
+call :info "Next step: open the project in Godot once so the LimboAI GDExtension is registered."
 
 endlocal
 exit /b 0
