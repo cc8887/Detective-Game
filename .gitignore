@@ -15,6 +15,9 @@ export_presets.cfg
 data_*/
 mono_crash.*.json
 
+# Devin CLI local config (per-developer secrets, e.g. MCP API keys)
+.devin/config.local.json
+
 # System/Editor-specific ignores
 .tmp/
 .DS_Store
