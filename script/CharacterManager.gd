@@ -25,20 +25,20 @@ func _unhandled_input(event):
 			click_position = get_viewport().get_canvas_transform().affine_inverse() * click_position
 			
 		var clicked_character = get_clicked_character(click_position)
-		var clicked_chair = get_clicked_chair(click_position)
+		var clicked_interactable = get_clicked_interactable(click_position)
 		
 		if clicked_character:
 			select_character(clicked_character)
-		elif clicked_chair and current_character:
-			# 点击了椅子，让当前角色移动到椅子并自动坐下
-			if current_character.has_method("move_to_chair"):
-				if current_character.move_to_chair(clicked_chair):
-					print("[CharacterManager] %s 开始移动到椅子 %s" % [current_character.name, clicked_chair.name])
+		elif clicked_interactable and current_character:
+			# 点击了可交互物，让当前角色移动过去并自动交互
+			if current_character.has_method("move_to_interactable"):
+				if current_character.move_to_interactable(clicked_interactable):
+					print("[CharacterManager] %s 开始移动到 %s" % [current_character.name, clicked_interactable.name])
 				else:
-					print("[CharacterManager] %s 无法移动到椅子 %s（可能已被占用）" % [current_character.name, clicked_chair.name])
+					print("[CharacterManager] %s 无法移动到 %s（可能已被占用）" % [current_character.name, clicked_interactable.name])
 			else:
-				# 兼容旧版本，直接移动到椅子位置
-				current_character.move_to(clicked_chair.global_position)
+				# 兼容旧版本，直接移动到物品位置
+				current_character.move_to(clicked_interactable.global_position)
 		elif current_character:
 			current_character.move_to(click_position)
 
@@ -57,13 +57,12 @@ func get_clicked_character(click_position):
 			return collider
 	return null
 
-# 获取点击位置的椅子
-func get_clicked_chair(click_position):
-	# 获取场景中所有椅子
-	var chairs = get_tree().get_nodes_in_group("chairs")
-	for chair in chairs:
-		if chair.has_method("is_clicked_on") and chair.is_clicked_on(click_position):
-			return chair
+# 获取点击位置的可交互物（椅子、未来新增的其他可交互物均可通过此方法查找）
+func get_clicked_interactable(click_position):
+	var interactables = get_tree().get_nodes_in_group("interactable")
+	for interactable in interactables:
+		if interactable.has_method("is_clicked_on") and interactable.is_clicked_on(click_position):
+			return interactable
 	return null
 
 # 获取指定角色附近的其他角色

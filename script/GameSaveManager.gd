@@ -145,8 +145,8 @@ func collect_character_data(character: Node) -> Dictionary:
 			character_data["facing_direction"] = controller.facing_direction
 		if controller.has_property("is_sitting"):
 			character_data["is_sitting"] = controller.is_sitting
-		if controller.has_property("current_chair") and controller.current_chair:
-			character_data["current_chair"] = controller.current_chair.name
+		if controller.has_property("current_interactable") and controller.current_interactable:
+			character_data["current_chair"] = controller.current_interactable.name
 	
 	# 获取AI代理数据
 	var ai_agent = character.get_node_or_null("AIAgent")
@@ -228,11 +228,11 @@ func apply_character_data(character: Node, data: Dictionary):
 		if data.has("is_sitting") and controller.has_property("is_sitting"):
 			controller.is_sitting = data["is_sitting"]
 		
-		# 恢复椅子状态
+		# 恢复交互物状态（存档字段名沿用 current_chair 以兼容旧存档）
 		if data.has("current_chair") and data["current_chair"]:
-			var chair = find_chair_by_name(data["current_chair"])
-			if chair and controller.has_property("current_chair"):
-				controller.current_chair = chair
+			var interactable = find_interactable_by_name(data["current_chair"])
+			if interactable and controller.has_property("current_interactable"):
+				controller.current_interactable = interactable
 	
 	# 获取AI代理
 	var ai_agent = character.get_node_or_null("AIAgent")
@@ -273,12 +273,12 @@ func find_character_by_name(character_name: String) -> Node:
 			return character
 	return null
 
-# 根据名称查找椅子
-func find_chair_by_name(chair_name: String) -> Node:
-	var chairs = get_tree().get_nodes_in_group("chairs")
-	for chair in chairs:
-		if chair.name == chair_name:
-			return chair
+# 根据名称查找可交互物（椅子、未来的其他可交互物均可通过此方法查找）
+func find_interactable_by_name(interactable_name: String) -> Node:
+	var interactables = get_tree().get_nodes_in_group("interactable")
+	for interactable in interactables:
+		if interactable.name == interactable_name:
+			return interactable
 	return null
 
 # 获取所有存档文件列表

@@ -217,42 +217,15 @@ func get_environment_info() -> String:
 	return environment_info
 
 # 获取物品信息和功能
+# 可交互物（继承自 Interactable，如 Chair）通过 get_ai_description() 自行提供描述，
+# 新增可交互物无需修改这里的代码。未迁移的旧物品走通用兜底描述。
 func get_object_info(obj: Node2D) -> String:
-	var info = obj.name
+	if obj.has_method("get_ai_description"):
+		return obj.get_ai_description(character)
 	
-	# 根据物品类型添加功能描述
+	var info = obj.name
 	if obj is StaticBody2D:
-		# 检查物品类型并添加相应描述
-		if "Chair" in obj.name or obj.is_in_group("chairs"):
-			info += "（一把椅子，可以坐下休息或工作）"
-			# 检查椅子是否被占用
-			if obj.has_method("is_occupied") and obj.is_occupied():
-				info += "，目前有人正在使用"
-			else:
-				info += "，目前无人使用"
-		elif "Desk" in obj.name:
-			info += "（一张办公桌，可以在这里工作、放置电脑和文件）"
-		elif "Computer" in obj.name:
-			info += "（一台电脑，可以用来处理工作、查看邮件或浏览网页）"
-		elif "Printer" in obj.name:
-			info += "（一台打印机，可以打印文件）"
-		elif "CoffeeMachine" in obj.name:
-			info += "（一台咖啡机，可以提供咖啡提神）"
-		elif "WaterDispenser" in obj.name:
-			info += "（一台饮水机，可以喝水解渴）"
-		elif "Sofa" in obj.name:
-			info += "（一张沙发，可以坐下休息放松）"
-		elif "Whiteboard" in obj.name:
-			info += "（一块白板，可以用来开会讨论或记录想法）"
-		elif "Bookshelf" in obj.name:
-			info += "（一个书架，存放各种书籍和资料）"
-		elif "FileCabinet" in obj.name:
-			info += "（一个文件柜，存放重要文件和档案）"
-		elif "Plant" in obj.name:
-			info += "（一盆植物，为办公环境增添生机）"
-		else:
-			# 默认描述
-			info += "（一个办公用品）"
+		info += "（一个办公用品）"
 	
 	# 添加距离信息
 	var distance = int(obj.global_position.distance_to(character.global_position))

@@ -7,10 +7,10 @@ var is_sitting = false
 var facing_direction = "down"  # 新增：记录角色朝向
 var navigation_path: Array = []
 var path_index = 0
-var near_chair = null  # 新增：当前靠近的椅子
-var current_chair = null  # 新增：当前坐着的椅子
-var target_chair = null  # 新增：目标椅子（用于自动坐下）
-var auto_sit_enabled = false  # 新增：是否启用自动坐下
+var nearby_interactable = null  # 当前靠近的可交互物（椅子、未来的其他可交互物等）
+var current_interactable = null  # 当前正在交互的物品（如坐着的椅子）
+var target_interactable = null  # 自动交互的目标物品
+var auto_interact_enabled = false  # 是否启用自动交互（点击可交互物后自动移动并交互）
 
 # AI代理系统
 var ai_agent: AIAgent
@@ -55,9 +55,9 @@ func move_to(target: Vector2):
 	if is_sitting:
 		return
 		
-	# 只有在不是自动坐下模式时才重置目标椅子状态
-	if not auto_sit_enabled:
-		target_chair = null
+	# 只有在不是自动交互模式时才重置目标物品状态
+	if not auto_interact_enabled:
+		target_interactable = null
 	
 	# 使用导航系统计算路径
 	var navigation_map = get_world_2d().navigation_map
@@ -306,7 +306,7 @@ func _physics_process(delta):
 			velocity = Vector2.ZERO
 			
 			# 检查是否需要自动坐下
-			_check_auto_sit()
+			_check_auto_interact()
 	else:
 		velocity = Vector2.ZERO
 	
@@ -321,67 +321,66 @@ func _unhandled_input(event):
 		return
 		
 	if event.is_action_pressed("sit"):
-		if near_chair and not is_sitting:
-			# 如果靠近椅子且未坐下，尝试坐到椅子上
-			sit_on_chair(near_chair)
-		elif current_chair and is_sitting:
-			# 如果已经坐在椅子上，站起来
-			stand_up_from_chair()
+		if nearby_interactable and not is_sitting:
+			# 如果靠近可交互物且未在交互中，尝试与其交互（坐下等）
+			interact_with(nearby_interactable)
+		elif current_interactable and is_sitting:
+			# 如果正在交互中，结束交互（站起来等）
+			release_current_interactable()
 		else:
 			# 普通的坐下/站起
 			toggle_sit()
 
-func sit_on_chair(chair):
-	if chair.sit_character(self):
-		is_sitting = true
-		current_chair = chair
-		target_position = Vector2.ZERO
-		velocity = Vector2.ZERO
-		facing_direction = chair.sit_direction
-		
-		# 播放对应方向的坐下动画
-		var anim_name = "sit_" + facing_direction
-		if facing_direction == "up":
-			anim_name = "sit_up"
-		elif facing_direction == "down":
-			anim_name = "sit_down"
-			
+# 与可交互物开始交互（坐下、使用等），具体效果由 Interactable 子类决定
+func interact_with(interactable) -> bool:
+	if not interactable or not interactable.interact(self):
+		return false
+	
+	is_sitting = true
+	current_interactable = interactable
+	target_position = Vector2.ZERO
+	velocity = Vector2.ZERO
+	
+	var direction = interactable.get_facing_direction(self)
+	if direction != "":
+		facing_direction = direction
+	
+	var anim_name = interactable.get_interaction_animation(self)
+	if anim_name != "":
 		$AnimatedSprite2D.play(anim_name)
-		return true
-	return false
+	
+	return true
 
-func stand_up_from_chair():
-	if current_chair and current_chair.stand_up():
-		is_sitting = false
-		current_chair = null
-		
-		# 重置Z轴顺序
-		z_index = 0
-		
-		# 根据之前的坐姿选择站起动画
-		var anim_name = "stand_" + facing_direction
-		if facing_direction == "up":
-			anim_name = "stand_up"
-		elif facing_direction == "down":
-			anim_name = "stand_down"
-			
+# 结束当前交互（站起来等），具体效果由 Interactable 子类决定
+func release_current_interactable() -> bool:
+	if not current_interactable or not current_interactable.release(self):
+		return false
+	
+	var anim_name = current_interactable.get_release_animation(self)
+	is_sitting = false
+	current_interactable = null
+	
+	# 重置Z轴顺序
+	z_index = 0
+	
+	if anim_name != "":
 		$AnimatedSprite2D.play(anim_name)
-		
 		# 等待站起动画播放完成
 		await $AnimatedSprite2D.animation_finished
-		
-		# 切换到闲置动画
-		$AnimatedSprite2D.play("idle_" + facing_direction)
-		
-		# 重置导航相关变量
-		navigation_path.clear()
-		path_index = 0
-		target_position = global_position
-		velocity = Vector2.ZERO
+	
+	# 切换到闲置动画
+	$AnimatedSprite2D.play("idle_" + facing_direction)
+	
+	# 重置导航相关变量
+	navigation_path.clear()
+	path_index = 0
+	target_position = global_position
+	velocity = Vector2.ZERO
+	return true
 
 func toggle_sit():
-	# 只在不靠近椅子时允许自由坐下
-	if near_chair:
+	# 只在不靠近可交互物时允许自由坐下
+	if nearby_interactable:
 		return
 		
 	is_sitting = !is_sitting
@@ -419,83 +418,83 @@ func update_animation():
 				animated_sprite.play("run_up")
 				facing_direction = "up"
 
-# 移动到椅子并自动坐下
-func move_to_chair(chair):
-	if is_sitting or not chair or chair.occupied:
+# 移动到可交互物并自动交互（坐下、使用等）
+func move_to_interactable(interactable):
+	if is_sitting or not interactable or not interactable.is_available():
 		return false
 	
-	# 设置目标椅子和自动坐下标志
-	target_chair = chair
-	auto_sit_enabled = true
+	# 设置目标物品和自动交互标志
+	target_interactable = interactable
+	auto_interact_enabled = true
 	
-	# 计算椅子的接近位置（椅子前方一定距离）
-	var approach_position = _calculate_chair_approach_position(chair)
+	# 计算物品的接近位置（物品前方一定距离）
+	var approach_position = _calculate_approach_position(interactable)
 	
 	# 移动到接近位置
 	move_to(approach_position)
 	
-	print("[CharacterController] %s 开始移动到椅子: %s" % [name, chair.name])
+	print("[CharacterController] %s 开始移动到: %s" % [name, interactable.name])
 	return true
 
-# 计算椅子的接近位置
-func _calculate_chair_approach_position(chair) -> Vector2:
-	var chair_pos = chair.global_position
+# 计算可交互物的接近位置
+func _calculate_approach_position(interactable) -> Vector2:
+	var target_pos = interactable.global_position
 	var current_pos = global_position
 	
-	# 计算从当前位置到椅子的方向
-	var direction_to_chair = (chair_pos - current_pos).normalized()
+	# 计算从当前位置到目标的方向
+	var direction_to_target = (target_pos - current_pos).normalized()
 	
-	# 如果距离椅子很近（小于25像素），直接返回椅子位置
-	var distance_to_chair = current_pos.distance_to(chair_pos)
-	if distance_to_chair <= 25.0:
-		return chair_pos
+	# 如果距离目标很近（小于25像素），直接返回目标位置
+	var distance_to_target = current_pos.distance_to(target_pos)
+	if distance_to_target <= 25.0:
+		return target_pos
 
-	# 否则，在椅子周围25像素的范围内找一个接近位置
+	# 否则，在目标周围25像素的范围内找一个接近位置
 	# 从当前方向接近，保持25像素的距离
-	var approach_offset = -direction_to_chair * 25.0
+	var approach_offset = -direction_to_target * 25.0
 	
-	return chair_pos + approach_offset
+	return target_pos + approach_offset
 
-# 检查是否需要自动坐下
-func _check_auto_sit():
-	if not auto_sit_enabled or not target_chair:
+# 检查是否需要自动交互
+func _check_auto_interact():
+	if not auto_interact_enabled or not target_interactable:
 		return
 	
-	# 检查目标椅子是否仍然可用
-	if target_chair.occupied:
-		print("[CharacterController] %s 目标椅子已被占用，取消自动坐下" % name)
-		target_chair = null
-		auto_sit_enabled = false
+	# 检查目标物品是否仍然可用
+	if not target_interactable.is_available():
+		print("[CharacterController] %s 目标物品已被占用，取消自动交互" % name)
+		target_interactable = null
+		auto_interact_enabled = false
 		return
 	
-	# 检查是否在椅子的交互范围内 - 使用更大的范围
-	var distance_to_chair = global_position.distance_to(target_chair.global_position)
-	print("[CharacterController] %s 距离椅子: %.1f 像素" % [name, distance_to_chair])
+	# 检查是否在物品的交互范围内 - 使用更大的范围
+	var distance_to_target = global_position.distance_to(target_interactable.global_position)
+	print("[CharacterController] %s 距离目标物品: %.1f 像素" % [name, distance_to_target])
 	
-	# 使用合理的交互范围（约角色大小的一半），或者检查是否在椅子的交互区域内
-	if distance_to_chair <= 20.0 or near_chair == target_chair:
-		# 尝试坐到椅子上
-		print("[CharacterController] %s 尝试坐到椅子上..." % name)
-		if sit_on_chair(target_chair):
-			print("[CharacterController] %s 成功自动坐到椅子上" % name)
+	# 使用合理的交互范围（约角色大小的一半），或者检查是否在物品的交互区域内
+	if distance_to_target <= 20.0 or nearby_interactable == target_interactable:
+		# 尝试交互
+		print("[CharacterController] %s 尝试交互..." % name)
+		if interact_with(target_interactable):
+			print("[CharacterController] %s 成功自动交互" % name)
 		else:
-			print("[CharacterController] %s 无法坐到椅子上" % name)
+			print("[CharacterController] %s 无法交互" % name)
 		
-		# 重置自动坐下状态
-		target_chair = null
-		auto_sit_enabled = false
+		# 重置自动交互状态
+		target_interactable = null
+		auto_interact_enabled = false
 	else:
 		# 距离太远，但不要重新移动，避免无限循环
-		# 直接尝试坐下，因为可能是精度问题
-		print("[CharacterController] %s 距离椅子较远 (%.1f)，直接尝试坐下" % [name, distance_to_chair])
-		if sit_on_chair(target_chair):
-			print("[CharacterController] %s 成功坐到椅子上" % name)
+		# 直接尝试交互，因为可能是精度问题
+		print("[CharacterController] %s 距离目标物品较远 (%.1f)，直接尝试交互" % [name, distance_to_target])
+		if interact_with(target_interactable):
+			print("[CharacterController] %s 成功交互" % name)
 		else:
-			print("[CharacterController] %s 无法坐到椅子上，取消自动坐下" % name)
+			print("[CharacterController] %s 无法交互，取消自动交互" % name)
 		
-		# 重置自动坐下状态
-		target_chair = null
-		auto_sit_enabled = false
+		# 重置自动交互状态
+		target_interactable = null
+		auto_interact_enabled = false
 
 # 创建AI模型显示标签
 func create_ai_model_label():
