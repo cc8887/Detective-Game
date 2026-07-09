@@ -5,6 +5,7 @@
 **分支**：`feature/game-architecture-analysis`
 **分析深度**：详细技术设计（数据结构 / 类划分 / 算法伪代码级别）
 **前提**：复用现有工程基础设施，不推翻现有 Godot 项目骨架
+**配套文档**：[`loop-collapse-phase1-plan.md`](./loop-collapse-phase1-plan.md) —— Phase 1 的具体任务拆解与验收标准
 
 ---
 
@@ -1049,6 +1050,7 @@ test/loop/
 - 手写 1 个固定故事弧 fixture（3 NPC / 5 步），对应 `test/loop/fixtures/will_arc.gd`
 - CLI 输出：临时用 `print()` 把 `ScriptFrame` 转成人类可读文本即可，不需要真正的 LLM 包装
 - 验收标准：`InferenceEngineDeterminismTest` 通过 + 手工验证崩坏/救济路径与 GDD 附录 A 数值吻合
+- **详细任务拆解见** [`loop-collapse-phase1-plan.md`](./loop-collapse-phase1-plan.md)（M1.0~M1.8，含每个子模块的单测覆盖点、《遗嘱》黄金测试用例、CLI 验收方式）
 
 ### Phase 2：LLM 集成
 - 落地 §7（`NarrativeBridge`、`StoryArcGenerator`、`DialogueConstraintBuilder`），复用 `APIManager`
