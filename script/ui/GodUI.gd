@@ -9,6 +9,9 @@ var BackgroundStoryManager = preload("res://script/ai/background_story/Backgroun
 @onready var character_list = $HBoxContainer/LeftPanel/VBoxContainer/CharacterList
 @onready var character_detail = $HBoxContainer/LeftPanel/VBoxContainer/CharacterDetail
 @onready var toggle_ui_button = $HBoxContainer/RightPanel/VBoxContainer/ToggleUIButton
+@onready var pause_button = $TopStatusBar/HBoxContainer/PauseButton
+@onready var speed_option_button = $TopStatusBar/HBoxContainer/SpeedOptionButton
+@onready var pause_status_label = $TopStatusBar/HBoxContainer/PauseStatusLabel
 
 # 弹窗引用
 @onready var implant_memory_popup = $Popups/ImplantMemoryPopup
@@ -41,6 +44,16 @@ func _ready():
 	$HBoxContainer/RightPanel/VBoxContainer/TaskButton.pressed.connect(_on_task_pressed)
 	$HBoxContainer/RightPanel/VBoxContainer/BackgroundButton.pressed.connect(_on_background_pressed)
 	toggle_ui_button.pressed.connect(_on_toggle_ui_pressed)
+	pause_button.pressed.connect(_on_pause_button_pressed)
+	speed_option_button.item_selected.connect(_on_speed_option_selected)
+	
+	# 连接暂停管理器信号，确保按钮文字随暂停状态（包括被其他地方触发时）同步更新
+	var pause_manager = get_node_or_null("/root/PauseManager")
+	if pause_manager:
+		pause_manager.pause_state_changed.connect(_on_pause_state_changed)
+		pause_manager.speed_changed.connect(_on_speed_changed)
+		_update_pause_button_text(pause_manager.is_paused)
+		_init_speed_option_button(pause_manager)
 	
 	# 连接角色列表信号
 	character_list.item_selected.connect(_on_character_selected)
@@ -308,6 +321,45 @@ func _toggle_ui(show):
 	right_panel.visible = show # 确保右侧面板也能切换
 	toggle_ui_button.visible = true # 总是保持可见
 	toggle_ui_button.text = "隐藏 UI" if show else "显示 UI"
+
+func _on_pause_button_pressed():
+	var pause_manager = get_node_or_null("/root/PauseManager")
+	if pause_manager:
+		pause_manager.toggle_pause()
+
+func _on_pause_state_changed(is_paused: bool):
+	_update_pause_button_text(is_paused)
+
+func _update_pause_button_text(is_paused: bool):
+	pause_button.text = "▶ 恢复世界" if is_paused else "⏸ 暂停世界"
+	pause_status_label.visible = is_paused
+
+# 倍速选项对应的显示文字，需与 PauseManager.SPEED_OPTIONS 的顺序一一对应
+const SPEED_OPTION_LABELS = ["1x 正常", "1.5x 加速", "3x 加速", "5x 加速", "10x 加速"]
+
+# 初始化倍速下拉框选项
+func _init_speed_option_button(pause_manager):
+	speed_option_button.clear()
+	for i in range(pause_manager.SPEED_OPTIONS.size()):
+		var label = SPEED_OPTION_LABELS[i] if i < SPEED_OPTION_LABELS.size() else "%sx 加速" % pause_manager.SPEED_OPTIONS[i]
+		speed_option_button.add_item(label)
+	_sync_speed_option_button(pause_manager.speed_multiplier)
+
+func _on_speed_option_selected(index: int):
+	var pause_manager = get_node_or_null("/root/PauseManager")
+	if pause_manager and index >= 0 and index < pause_manager.SPEED_OPTIONS.size():
+		pause_manager.set_speed(pause_manager.SPEED_OPTIONS[index])
+
+func _on_speed_changed(multiplier: float):
+	_sync_speed_option_button(multiplier)
+
+func _sync_speed_option_button(multiplier: float):
+	var pause_manager = get_node_or_null("/root/PauseManager")
+	if not pause_manager:
+		return
+	var index = pause_manager.SPEED_OPTIONS.find(multiplier)
+	if index >= 0 and speed_option_button.selected != index:
+		speed_option_button.select(index)
 
 func _on_implant_memory_pressed():
 	implant_memory_popup.popup_centered()

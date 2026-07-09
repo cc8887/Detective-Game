@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://cemwhdmyu4vvi"]
 
 [ext_resource type="Script" uid="uid://dqx3b82r3ghot" path="res://script/Desk.gd" id="1_lbfdk"]
-[ext_resource type="Texture2D" uid="uid://ca3y5lysxei73" path="res://asset/singleObjects/office_objects/Modern_Office_Singles_32x32_223.png" id="1_vbard"]
+[ext_resource type="Texture2D" uid="uid://dvvd41x1kii0v" path="res://asset/singleObjects/office_objects/Modern_Office_Singles_32x32_223.png" id="1_vbard"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lbfdk"]
 size = Vector2(32, 32)

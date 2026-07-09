@@ -2,11 +2,12 @@
 
 [ext_resource type="Script" uid="uid://cllwdn7qrubwu" path="res://script/ui/GlobalSettingsUI.gd" id="1_dknm6"]
 [ext_resource type="Theme" uid="uid://xn0cilaavrhp" path="res://asset/ui/theme/MainMenu.tres" id="2_802hr"]
-[ext_resource type="FontFile" uid="uid://bh5v7skmp36yr" path="res://asset/fonts/fusion-pixel-12px-proportional-zh_hans.otf" id="2_rvc10"]
-[ext_resource type="Texture2D" uid="uid://b7ok05bir02oj" path="res://asset/ui/singles32x32/GUI/003.png" id="3_lg23i"]
+[ext_resource type="FontFile" uid="uid://b2m5lyxnfx86q" path="res://asset/fonts/fusion-pixel-12px-proportional-zh_hans.otf" id="2_rvc10"]
+[ext_resource type="Texture2D" uid="uid://rww2ms4soylj" path="res://asset/ui/singles32x32/GUI/003.png" id="3_lg23i"]
 
 [node name="SettingsLayer" type="CanvasLayer"]
 layer = 100
+process_mode = 3
 script = ExtResource("1_dknm6")
 
 [node name="SettingsUI" type="Control" parent="."]

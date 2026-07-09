@@ -34,6 +34,19 @@ func get_current_room(current_rooms: Dictionary, character_position: Vector2) ->
 			return room
 	return null
 
+func get_room_key_by_position(pos: Vector2) -> String:
+	for room_key in rooms.keys():
+		var room: RoomData = rooms[room_key]
+		if is_position_in_room(pos, room):
+			return room_key
+	return ""
+
+func get_room_by_position(pos: Vector2) -> RoomData:
+	var room_key := get_room_key_by_position(pos)
+	if room_key == "":
+		return null
+	return rooms[room_key]
+
 # 判断位置是否在房间内
 func is_position_in_room(pos: Vector2, room: RoomData) -> bool:
 	# 确保房间数据有效

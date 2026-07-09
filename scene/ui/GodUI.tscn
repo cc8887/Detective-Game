@@ -3,15 +3,15 @@
 [ext_resource type="Theme" uid="uid://bfov2kf38bhec" path="res://asset/ui/theme/GamingTheme.tres" id="1_6k3kb"]
 [ext_resource type="Script" uid="uid://532atrkpoqav" path="res://script/ui/GodUI.gd" id="1_8j4ka"]
 [ext_resource type="Script" uid="uid://bafxk773uckm0" path="res://script/ui/CharacterAISettings.gd" id="2_character_ai_settings"]
-[ext_resource type="Texture2D" uid="uid://csa2ceqk71y5m" path="res://asset/characters/portraits/AliceP32.png" id="3_8si57"]
-[ext_resource type="Texture2D" uid="uid://cj2m11obrynww" path="res://asset/ui/singles32x32/Modern_UI_Style_2_32x32.png~1/0122.png" id="4_ifhre"]
-[ext_resource type="Texture2D" uid="uid://6amvw0p3jfc" path="res://asset/characters/portraits/GraceP32.png" id="4_rpgor"]
-[ext_resource type="Texture2D" uid="uid://bhlvauuw1m6vk" path="res://asset/ui/singles32x32/Modern_UI_Style_2_32x32.png~1/0123.png" id="5_8si57"]
-[ext_resource type="Texture2D" uid="uid://iid08h0ie7w7" path="res://asset/characters/portraits/JackP32.png" id="5_a75cr"]
-[ext_resource type="Texture2D" uid="uid://wvm50ofvu20w" path="res://asset/characters/portraits/JoeP32.png" id="6_k3v5r"]
-[ext_resource type="Texture2D" uid="uid://c58f4hxnqbodp" path="res://asset/characters/portraits/LeaP32.png" id="7_qiji8"]
-[ext_resource type="Texture2D" uid="uid://dnpjvk7co7dlb" path="res://asset/characters/portraits/MonicaP32.png" id="8_cg6s6"]
-[ext_resource type="Texture2D" uid="uid://bsliw6p4he887" path="res://asset/characters/portraits/StephenP32.png" id="9_i3jv8"]
+[ext_resource type="Texture2D" uid="uid://cmdkiof100057" path="res://asset/characters/portraits/AliceP32.png" id="3_8si57"]
+[ext_resource type="Texture2D" uid="uid://jnqhiaooqpxk" path="res://asset/ui/singles32x32/Modern_UI_Style_2_32x32.png~1/0122.png" id="4_ifhre"]
+[ext_resource type="Texture2D" uid="uid://cvg3qk7aaesu3" path="res://asset/characters/portraits/GraceP32.png" id="4_rpgor"]
+[ext_resource type="Texture2D" uid="uid://d1joimdn0vpnl" path="res://asset/ui/singles32x32/Modern_UI_Style_2_32x32.png~1/0123.png" id="5_8si57"]
+[ext_resource type="Texture2D" uid="uid://bq4my3c8sk16b" path="res://asset/characters/portraits/JackP32.png" id="5_a75cr"]
+[ext_resource type="Texture2D" uid="uid://bcpp3m530wh1a" path="res://asset/characters/portraits/JoeP32.png" id="6_k3v5r"]
+[ext_resource type="Texture2D" uid="uid://cflhm3foq5x0n" path="res://asset/characters/portraits/LeaP32.png" id="7_qiji8"]
+[ext_resource type="Texture2D" uid="uid://bvu718gfkrpm2" path="res://asset/characters/portraits/MonicaP32.png" id="8_cg6s6"]
+[ext_resource type="Texture2D" uid="uid://cms6rro8d5svc" path="res://asset/characters/portraits/StephenP32.png" id="9_i3jv8"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_k3yl8"]
 atlas = ExtResource("3_8si57")
@@ -2336,6 +2336,7 @@ animations = [{
 }]
 
 [node name="GodUI" type="Control" groups=["godui"]]
+process_mode = 3
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -2593,6 +2594,40 @@ size_flags_vertical = 3
 [node name="ToggleUIButton" type="Button" parent="HBoxContainer/RightPanel/VBoxContainer"]
 layout_mode = 2
 text = "隐藏 UI"
+
+[node name="TopStatusBar" type="PanelContainer" parent="."]
+process_mode = 3
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -220.0
+offset_top = 10.0
+offset_right = 220.0
+offset_bottom = 46.0
+grow_horizontal = 2
+mouse_filter = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TopStatusBar"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="PauseButton" type="Button" parent="TopStatusBar/HBoxContainer"]
+layout_mode = 2
+tooltip_text = "暂停/恢复世界运行"
+text = "⏸ 暂停世界"
+
+[node name="SpeedOptionButton" type="OptionButton" parent="TopStatusBar/HBoxContainer"]
+layout_mode = 2
+tooltip_text = "调整世界运行速度"
+
+[node name="PauseStatusLabel" type="Label" parent="TopStatusBar/HBoxContainer"]
+layout_mode = 2
+visible = false
+text = "⏸ 已暂停"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Popups" type="Control" parent="."]
 layout_mode = 1

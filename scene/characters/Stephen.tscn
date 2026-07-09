@@ -1,6 +1,6 @@
 [gd_scene load_steps=82 format=3 uid="uid://b37ihqa7p6w5t"]
 
-[ext_resource type="Texture2D" uid="uid://cm5hax1cgqrfw" path="res://asset/characters/body/Stephenx32.png" id="1_06efk"]
+[ext_resource type="Texture2D" uid="uid://d2lhqe4nkvl8y" path="res://asset/characters/body/Stephenx32.png" id="1_06efk"]
 [ext_resource type="Script" uid="uid://bh7pwihb61whq" path="res://script/CharacterController.gd" id="1_yd8ek"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_1l84n"]

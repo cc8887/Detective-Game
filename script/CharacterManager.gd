@@ -6,9 +6,11 @@ const DIALOG_DISTANCE = 100.0  # 触发对话的距离阈值
 
 # GodUI引用
 var god_ui: Control = null
+var fog_of_war_manager: Node = null
 
 func _ready():
 	dialog_manager = get_node("/root/DialogManager")  # 获取对话管理器引用
+	_refresh_fog_of_war_reference()
 	# 获取所有可控制的角色
 	for character in get_tree().get_nodes_in_group("controllable_characters"):
 		character.set_selected(false)
@@ -53,7 +55,7 @@ func get_clicked_character(click_position):
 	var result = space.intersect_point(query)
 	for collision in result:
 		var collider = collision.collider
-		if collider.is_in_group("controllable_characters"):
+		if collider.is_in_group("controllable_characters") and _is_node_visible_to_player(collider):
 			return collider
 	return null
 
@@ -61,9 +63,26 @@ func get_clicked_character(click_position):
 func get_clicked_interactable(click_position):
 	var interactables = get_tree().get_nodes_in_group("interactable")
 	for interactable in interactables:
-		if interactable.has_method("is_clicked_on") and interactable.is_clicked_on(click_position):
+		if _is_node_visible_to_player(interactable) and interactable.has_method("is_clicked_on") and interactable.is_clicked_on(click_position):
 			return interactable
 	return null
+
+func _is_node_visible_to_player(node: Node2D) -> bool:
+	_refresh_fog_of_war_reference()
+	if fog_of_war_manager and fog_of_war_manager.has_method("is_node_visible_to_player"):
+		return fog_of_war_manager.is_node_visible_to_player(node)
+	return true
+
+func _refresh_fog_of_war_reference() -> void:
+	if fog_of_war_manager and is_instance_valid(fog_of_war_manager):
+		var scene_root := fog_of_war_manager.get_tree().current_scene
+		if scene_root == get_tree().current_scene:
+			return
+
+	fog_of_war_manager = null
+	var current_scene = get_tree().current_scene
+	if current_scene:
+		fog_of_war_manager = current_scene.get_node_or_null("FogOfWarManager")
 
 # 获取指定角色附近的其他角色
 func get_nearby_character(character: CharacterBody2D) -> CharacterBody2D:

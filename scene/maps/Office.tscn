@@ -1,21 +1,21 @@
-[gd_scene load_steps=72 format=4 uid="uid://nhba2jdtsjsx"]
+[gd_scene load_steps=73 format=4 uid="uid://nhba2jdtsjsx"]
 
-[ext_resource type="Texture2D" uid="uid://bg7vxkearntad" path="res://asset/maps/interiors/3_Bathroom_32x32.png" id="1_xsptx"]
-[ext_resource type="Texture2D" uid="uid://u2qghko6a2k2" path="res://asset/maps/interiors/Room_Builder_32x32.png" id="2_0ao8h"]
-[ext_resource type="Texture2D" uid="uid://dqd2b24vw6w0o" path="res://asset/maps/interiors/Modern_Office_32x32.png" id="3_wvn72"]
-[ext_resource type="Texture2D" uid="uid://b5newwkw4cqrs" path="res://asset/maps/interiors/Room_Builder_Office_32x32.png" id="4_4pcs8"]
-[ext_resource type="Texture2D" uid="uid://cmbmjbd7iwlab" path="res://asset/maps/interiors/8_Gym_32x32.png" id="5_ndx4t"]
-[ext_resource type="Texture2D" uid="uid://bdswku11wld8i" path="res://asset/maps/interiors/6_Music_and_sport_32x32.png" id="6_083jp"]
-[ext_resource type="Texture2D" uid="uid://cdxn5jttfmam7" path="res://asset/maps/interiors/1_Generic_32x32.png" id="7_po4au"]
-[ext_resource type="Texture2D" uid="uid://c6bqrcphv7g4u" path="res://asset/maps/exteriors/16_Office_32x32.png" id="8_rryi1"]
-[ext_resource type="Texture2D" uid="uid://bnx7tcoyqbaty" path="res://asset/objects/animated_party_balloon_blue_32x32.png" id="8_x8dwi"]
-[ext_resource type="Texture2D" uid="uid://c8844lcfx3u41" path="res://asset/objects/animated_party_balloon_green_32x32.png" id="9_mgek1"]
-[ext_resource type="Texture2D" uid="uid://crb614s5ph1hm" path="res://asset/maps/interiors/Generic_Home_1_Layer_1_32x32.png" id="9_rryi1"]
-[ext_resource type="Texture2D" uid="uid://bxiyxvudqjcvm" path="res://asset/objects/animated_party_balloon_red_32x32.png" id="10_oki8b"]
-[ext_resource type="Texture2D" uid="uid://cuecil7p88k6g" path="res://asset/objects/animated_party_balloon_yellow_32x32.png" id="11_luden"]
-[ext_resource type="Texture2D" uid="uid://cvkl7y7r1mq36" path="res://asset/maps/interiors/10_Birthday_party_32x32.png" id="12_16lyc"]
-[ext_resource type="Texture2D" uid="uid://dbccn6v22ht7s" path="res://asset/maps/interiors/21_Beach_32x32.png" id="13_a4dmk"]
-[ext_resource type="Texture2D" uid="uid://cftqaclcrf3te" path="res://asset/maps/interiors/23_Television_and_Film_Studio_32x32.png" id="14_nb08b"]
+[ext_resource type="Texture2D" uid="uid://bged6opffr2vl" path="res://asset/maps/interiors/3_Bathroom_32x32.png" id="1_xsptx"]
+[ext_resource type="Texture2D" uid="uid://bktquprk15n53" path="res://asset/maps/interiors/Room_Builder_32x32.png" id="2_0ao8h"]
+[ext_resource type="Texture2D" uid="uid://wp2p343jvdoe" path="res://asset/maps/interiors/Modern_Office_32x32.png" id="3_wvn72"]
+[ext_resource type="Texture2D" uid="uid://dcgstlnsesg16" path="res://asset/maps/interiors/Room_Builder_Office_32x32.png" id="4_4pcs8"]
+[ext_resource type="Texture2D" uid="uid://c5b5n4fwxsjx4" path="res://asset/maps/interiors/8_Gym_32x32.png" id="5_ndx4t"]
+[ext_resource type="Texture2D" uid="uid://be18r3hrrfw0i" path="res://asset/maps/interiors/6_Music_and_sport_32x32.png" id="6_083jp"]
+[ext_resource type="Texture2D" uid="uid://d1waj38ey13t3" path="res://asset/maps/interiors/1_Generic_32x32.png" id="7_po4au"]
+[ext_resource type="Texture2D" uid="uid://xf1855w2f8va" path="res://asset/maps/exteriors/16_Office_32x32.png" id="8_rryi1"]
+[ext_resource type="Texture2D" uid="uid://clry2swubtr8y" path="res://asset/objects/animated_party_balloon_blue_32x32.png" id="8_x8dwi"]
+[ext_resource type="Texture2D" uid="uid://dx61nqrcsyt7i" path="res://asset/objects/animated_party_balloon_green_32x32.png" id="9_mgek1"]
+[ext_resource type="Texture2D" uid="uid://b6iw4n1e44ctj" path="res://asset/maps/interiors/Generic_Home_1_Layer_1_32x32.png" id="9_rryi1"]
+[ext_resource type="Texture2D" uid="uid://booqywcb45vh1" path="res://asset/objects/animated_party_balloon_red_32x32.png" id="10_oki8b"]
+[ext_resource type="Texture2D" uid="uid://c2n307c5014xg" path="res://asset/objects/animated_party_balloon_yellow_32x32.png" id="11_luden"]
+[ext_resource type="Texture2D" uid="uid://dsyd5164dtlas" path="res://asset/maps/interiors/10_Birthday_party_32x32.png" id="12_16lyc"]
+[ext_resource type="Texture2D" uid="uid://chy20ro30nv6m" path="res://asset/maps/interiors/21_Beach_32x32.png" id="13_a4dmk"]
+[ext_resource type="Texture2D" uid="uid://b30arepgsovdx" path="res://asset/maps/interiors/23_Television_and_Film_Studio_32x32.png" id="14_nb08b"]
 [ext_resource type="Script" uid="uid://msfgxiljxg7n" path="res://script/CharacterManager.gd" id="15_y022p"]
 [ext_resource type="PackedScene" uid="uid://dlgjw4hrdk1xu" path="res://scene/prefab/BackChair.tscn" id="16_dme33"]
 [ext_resource type="Script" uid="uid://jukfjtge0p5v" path="res://script/CameraController.gd" id="16_tgr77"]
@@ -33,6 +33,7 @@
 [ext_resource type="Script" uid="uid://dwbuqa6u6pc8y" path="res://script/RoomManager.gd" id="31_8h615"]
 [ext_resource type="PackedScene" uid="uid://b37ihqa7p6w5t" path="res://scene/characters/Stephen.tscn" id="31_8035k"]
 [ext_resource type="PackedScene" uid="uid://cyhpykj1xrn1n" path="res://scene/characters/Tom.tscn" id="32_vckrt"]
+[ext_resource type="Script" path="res://script/FogOfWarManager.gd" id="33_m0fog"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_3he53"]
 
@@ -16959,10 +16960,15 @@ position = Vector2(1032, 512)
 position = Vector2(120, 512)
 
 [node name="SettingsLayer" parent="." instance=ExtResource("26_ik20s")]
+process_mode = 3
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
+process_mode = 3
 
 [node name="GodUI" parent="CanvasLayer" instance=ExtResource("27_ik20s")]
+
+[node name="FogOfWarManager" type="Node2D" parent="."]
+script = ExtResource("33_m0fog")
 
 [node name="RoomArea" type="Node2D" parent="."]
 visible = false

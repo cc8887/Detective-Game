@@ -1,10 +1,10 @@
 [gd_scene load_steps=84 format=3 uid="uid://c2slyrs5wkufs"]
 
 [ext_resource type="Script" uid="uid://bh7pwihb61whq" path="res://script/CharacterController.gd" id="1_wxfil"]
-[ext_resource type="Texture2D" uid="uid://bhxnlpgp5jno6" path="res://asset/characters/body/Gracex32.png" id="2_x1fy7"]
+[ext_resource type="Texture2D" uid="uid://b1yfchp0cqap5" path="res://asset/characters/body/Gracex32.png" id="2_x1fy7"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_x1fy7"]
-load_path = "res://.godot/imported/Gracex32.png-1e778848f05a96857e947fc1d7c4cbae.ctex"
+load_path = "res://.godot/imported/Gracex32.png-4407e65d31056db6d7539e9e0d9ccbf9.ctex"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fuwcs"]
 atlas = SubResource("CompressedTexture2D_x1fy7")
