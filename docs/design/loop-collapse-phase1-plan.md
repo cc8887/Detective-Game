@@ -4,6 +4,7 @@
 **范围**：纯算法推导引擎，不接入 LLM、不接入 Godot 场景/UI
 **验收基准**：GDD 附录 A《遗嘱》崩坏模拟示例（唯一给出完整数值轨迹的官方样例，作为 golden test）
 **运行方式**：全部通过 gdUnit4 headless 跑通，复用现有 `./runtests.sh`
+**配套文档**：[`loop-collapse-test-plan.md`](./loop-collapse-test-plan.md) —— 每个功能点对应的详细 Given/When/Then 测试用例（本文档 M1.3/M1.5/M1.6 提到的测试文件在其中有完整展开）
 
 ---
 

@@ -5,7 +5,9 @@
 **分支**：`feature/game-architecture-analysis`
 **分析深度**：详细技术设计（数据结构 / 类划分 / 算法伪代码级别）
 **前提**：复用现有工程基础设施，不推翻现有 Godot 项目骨架
-**配套文档**：[`loop-collapse-phase1-plan.md`](./loop-collapse-phase1-plan.md) —— Phase 1 的具体任务拆解与验收标准
+**配套文档**：
+- [`loop-collapse-phase1-plan.md`](./loop-collapse-phase1-plan.md) —— Phase 1 的具体任务拆解与验收标准
+- [`loop-collapse-test-plan.md`](./loop-collapse-test-plan.md) —— 本文档每个功能点对应的完整测试用例清单（gdUnit4）
 
 ---
 
