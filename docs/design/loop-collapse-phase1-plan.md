@@ -82,7 +82,7 @@ test/loop/
 | `model/Belief.gd` | 信念 + `resistance()` | `BeliefTest.gd`（**重点**：抵抗力上限 0.95、核心创伤 +0.5、各项系数独立叠加） |
 | `model/Interpretation.gd` | 候选解读 | — |
 | `model/EventRecord.gd` | 客观事件/记忆库条目 | `EventRecordTest.gd`（`witnesses`/`chosen_interpretation_by` 的增删） |
-| `model/NPCState.gd` | 动态属性 + `duplicate_deep()` | `NPCStateTest.gd`（**重点**：`duplicate_deep()` 后修改副本不影响原对象，这是快照系统的正确性前提） |
+| `model/NPCState.gd` | 动态属性 + `clone_deep()` | `NPCStateTest.gd`（**重点**：`clone_deep()` 后修改副本不影响原对象，这是快照系统的正确性前提） |
 | `model/WorldFact.gd` | 客观事实 | — |
 | `model/TimeStepSpec.gd` | 时间步定义 | — |
 | `model/ActionDefinition.gd` | Action 定义（四层结构） | `ActionDefinitionTest.gd`（`Tier` 枚举与解锁条件字段） |
@@ -129,7 +129,7 @@ func snapshot() -> Dictionary   # 深拷贝可序列化字典，供 M1.7 CLI 与
 
 - [ ] 实现 `load_from_arc`：把 `StoryArcDefinition.npc_definitions` 转成 `npc_states`（初始信念/信任/压力从 `NPCDefinition` 拷贝，注意信任是 `Dictionary` 需要深拷贝不能共享引用）
 - [ ] 实现 `get_trust`：读 `npc_states[from_id].trust_towards.get(to_id, 0.0)`，玩家 id 固定用 `"__player__"`
-- [ ] 实现 `snapshot()`：不能直接 `duplicate()` 整个 Dictionary（浅拷贝会共享子对象引用），必须逐个 NPCState 调 `duplicate_deep()`
+- [ ] 实现 `snapshot()`：不能直接 `duplicate()` 整个 Dictionary（浅拷贝会共享子对象引用），必须逐个 NPCState 调 `clone_deep()`
 
 **验收标准**：`WorldStateContextTest.gd` 验证 `load_from_arc` 后修改某个 NPC 的信任值不会影响 `NPCDefinition.initial_trust`（防止"重置循环"时脏数据污染下一轮初始条件）。
 

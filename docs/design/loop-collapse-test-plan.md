@@ -60,15 +60,15 @@
 |---|---|---|
 | TC-VIS-01 | Given `Visibility.Level` 三个枚举值 / When 转成字符串用于日志 / Then 不抛异常（纯健壮性检查，逻辑测试见 §2.1 `PerceptionFilter`） | P1 |
 
-### 1.5 `NPCState.duplicate_deep()`（§3.3）—— 快照系统正确性前提，务必重点覆盖
+### 1.5 `NPCState.clone_deep()`（§3.3）—— 快照系统正确性前提，务必重点覆盖
 
 | ID | Given | When | Then | 阶段 |
 |---|---|---|---|---|
-| TC-NPCSTATE-01 | 原始 `NPCState` 含 1 条 `Belief`、1 条 `trust_towards` 记录、1 条 `memory_log` | 调 `duplicate_deep()` 得到副本 | 副本与原始对象**不是同一引用**（`!=` id 比较通过 `is_same()`） | P1 |
+| TC-NPCSTATE-01 | 原始 `NPCState` 含 1 条 `Belief`、1 条 `trust_towards` 记录、1 条 `memory_log` | 调 `clone_deep()` 得到副本 | 副本与原始对象**不是同一引用**（`!=` id 比较通过 `is_same()`） | P1 |
 | TC-NPCSTATE-02 | 同上 | 修改副本的 `beliefs[0].confidence` | 原始对象的 `beliefs[0].confidence` **不变**（验证 `beliefs` 数组元素也被深拷贝，不是只拷贝了数组容器） | P1 |
 | TC-NPCSTATE-03 | 同上 | 修改副本的 `trust_towards["X"]` | 原始对象的 `trust_towards["X"]` 不变 | P1 |
 | TC-NPCSTATE-04 | 同上 | 修改副本的 `memory_log[0].witnesses` | 原始对象的 `memory_log[0].witnesses` 不变（`EventRecord` 也要深拷贝，这是最容易漏的一层，因为 `memory_log` 里存的是引用而不是值） | P1 |
-| TC-NPCSTATE-05 | 原始对象 `intent = {}` | 调 `duplicate_deep()` 后修改副本 `intent` | 原始对象的 `intent` 仍为空字典 | P1 |
+| TC-NPCSTATE-05 | 原始对象 `intent = {}` | 调 `clone_deep()` 后修改副本 `intent` | 原始对象的 `intent` 仍为空字典 | P1 |
 
 测试文件：`test/loop/model/NPCStateTest.gd`（这是 Phase 1 里**优先级最高**的数据类测试，`LoopSnapshotStore`/`WorldStateContext.snapshot()` 全部依赖它的正确性，一旦这里有浅拷贝漏洞，会导致"重放历史快照"看到的其实是"当前最新状态"这种隐蔽 bug）
 
@@ -114,7 +114,7 @@
 | TC-WORLD-02 | Given 玩家 id 约定 `"__player__"` / When `get_trust("A", "__player__")` 且 A 未显式设置对玩家的信任 / Then 返回默认值 `0.0`（不抛异常，不返回 null） | P1 |
 | TC-WORLD-03 | Given `TimeStepSpec.scheduled_events` 含 2 个 event_id / When 同一个 `spec` 被 `activate_scheduled_events()` 调用两次（误触发场景） / Then 第二次不重复把同一事件加入 `active_events` 返回值（需要设计"事件是否已激活"的标记字段，防止 `LoopController` 出现重试逻辑时事件被算两遍） | P1 |
 | TC-WORLD-04 | Given 引擎跑完一步产生崩坏 / When 调 `mark_breakdown("A", 5)` 后调 `has_breakdown()` | Then 返回 `true`，且 `breakdown_log` 含 `{npc_id:"A", step_index:5}` | P1 |
-| TC-WORLD-05 | Given 任意 `WorldStateContext` 状态 / When 调 `snapshot()` 后立即修改原始 `npc_states` 中某个 NPC 的 `stress` | Then 快照里的对应值不变（即 `snapshot()` 内部必须调用 §1.5 的 `duplicate_deep()`，这条测试是 TC-NPCSTATE-01~05 的集成验证版） | P1 |
+| TC-WORLD-05 | Given 任意 `WorldStateContext` 状态 / When 调 `snapshot()` 后立即修改原始 `npc_states` 中某个 NPC 的 `stress` | Then 快照里的对应值不变（即 `snapshot()` 内部必须调用 §1.5 的 `clone_deep()`，这条测试是 TC-NPCSTATE-01~05 的集成验证版） | P1 |
 | TC-WORLD-06 | Given `advance_step()` 连续调用 N 次 / Then `current_step_index` 精确 +N，不跳步不回退 | P1 |
 
 测试文件：`test/loop/engine/WorldStateContextTest.gd`

@@ -187,10 +187,16 @@ var intent: Dictionary = {}               # {} 表示无意图；否则 {type, t
 var memory_log: Array[EventRecord] = []   # "记忆库"——已感知并解读过的事件
 var pending_action_queue: Array = []      # 本时间步待竞争的行为，见 §7
 
-func duplicate_deep() -> NPCState:
+func clone_deep() -> NPCState:
     # 用于 LoopSnapshotStore 逐步快照，必须是深拷贝，不能共享引用
     ...
 ```
+
+> **实现记录（Phase 1 Increment 1 落地时发现）**：本文档最初把这个方法命名为 `duplicate_deep()`，
+> 但 Godot 4.7 的 `Resource` 原生已经有一个同名方法 `duplicate_deep(DeepDuplicateMode)`，
+> 会导致继承 `Resource` 的类（如 `NPCDefinition`）出现签名不匹配的编译错误。
+> 因此实际实现中统一改名为 `clone_deep()`（`Belief`/`EventRecord`/`NPCState`/`NPCDefinition` 全部同步改名，
+> 即使部分类并非继承 `Resource` 也保持命名一致）。本文档已同步更新全部引用。
 
 ### 3.4 Belief（信念，GDD §5.3 / §6.4）
 
