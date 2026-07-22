@@ -13,7 +13,9 @@ extends GdUnitTestSuite
 func test_limboai_classes_are_registered() -> void:
 	assert_object(ClassDB.instantiate("BTSequence")).is_not_null()
 	assert_object(ClassDB.instantiate("BTSelector")).is_not_null()
-	assert_object(ClassDB.instantiate("BTPlayer")).is_not_null()
+	var player := ClassDB.instantiate("BTPlayer") as Node
+	assert_object(player).is_not_null()
+	player.free()
 	assert_object(ClassDB.instantiate("Blackboard")).is_not_null()
 
 # 运行时构建一棵 Sequence[BTLog("a"), BTLog("b")]，tick 一次应全部 SUCCESS，
